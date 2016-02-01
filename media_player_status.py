@@ -1,4 +1,6 @@
 import subprocess
+import re
+import dbus
 
 def get_pid(name):
     """
@@ -19,17 +21,27 @@ def bytes_to_string(s):
 
 
 def get_banshee():
-    current_title = bytes_to_string(subprocess.check_output(["banshee", "--query-title"])).split(': ')[1]
-    current_artist = bytes_to_string(subprocess.check_output(["banshee", "--query-artist"])).split(': ')[1]
-    current_album = bytes_to_string(subprocess.check_output(["banshee", "--query-album"])).split(': ')[1]
-    current_year = bytes_to_string(subprocess.check_output(["banshee", "--query-year"])).split(': ')[1]
-    data = {'title': current_title,
-            'artist': current_artist,
-            'album': current_album,
-            'year': current_year}
+    # TODO replace this with dbus calls
+    # Banshee has the capabilities for this at http://banshee.fm/contribute/write-code/dbus-interfaces/
+    metadata = bytes_to_string(subprocess.check_output(["banshee", "--query-title", "--query-artist", "--query-album", "--query-year"])).rsplit('\n')
+    metadata = dict([x.split(': ') for x in metadata])
+    return metadata
+
+def get_spotify():
+    bus = dbus.SessionBus()
+    obj = bus.get_object("org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2")
+    interface = dbus.Interface(obj, dbus_interface='org.freedesktop.DBus.Properties')
+    metadata = interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
+
+    data = dict()
+    data['artist'] = metadata['xesam:albumArtist']
+    data['album'] = metadata['xesam:album']
+    data['title'] = metadata['xesam:title']
+    data['year'] = '?'
     return data
 
 def format_string(data):
+    # TODO pass in a format string and parse from there
     output = '{0} - {1}, {2} ({3})'.format(data['title'], data['artist'], data['album'], data['year'])
     return output
 
@@ -37,10 +49,10 @@ def format_string(data):
 
 if __name__ == '__main__':
     if get_pid("spotify"):
-        print("Spotify not yet implemented.")
+        data = get_spotify()
     elif get_pid("banshee"):
         data = get_banshee()
-        output = format_string(data)
-        print(output)
+    output = format_string(data)
+    print(output)
         
     
