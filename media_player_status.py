@@ -21,8 +21,6 @@ def bytes_to_string(s):
 
 
 def get_banshee():
-    # TODO replace this with dbus calls
-    # Banshee has the capabilities for this at http://banshee.fm/contribute/write-code/dbus-interfaces/
     metadata = bytes_to_string(subprocess.check_output(["banshee", "--query-title", "--query-artist", "--query-album", "--query-year"])).rsplit('\n')
     metadata = dict([x.split(': ') for x in metadata])
     return metadata
@@ -41,11 +39,8 @@ def get_spotify():
     return data
 
 def format_string(data):
-    # TODO pass in a format string and parse from there
-    output = '{0} - {1}, {2} ({3})'.format(data['title'], data['artist'], data['album'], data['year'])
+    output = '{0} - {1} ({2}, {3})'.format(data['title'], data['artist'], data['album'], data['year'])
     return output
-
-
 
 if __name__ == '__main__':
     if get_pid("spotify"):
@@ -54,5 +49,3 @@ if __name__ == '__main__':
         data = get_banshee()
     output = format_string(data)
     print(output)
-        
-    
