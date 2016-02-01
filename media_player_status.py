@@ -34,7 +34,7 @@ def get_spotify():
     metadata = interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
 
     data = dict()
-    data['artist'] = metadata['xesam:albumArtist']
+    data['artist'] = metadata['xesam:albumArtist'][0]
     data['album'] = metadata['xesam:album']
     data['title'] = metadata['xesam:title']
     data['year'] = '?'
