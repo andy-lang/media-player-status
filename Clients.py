@@ -13,7 +13,10 @@ class Client:
     message_name = None
 
     def __init__(self):
-        pass
+        self.bus = dbus.SessionBus()
+        self.obj = self.bus.get_object(self.dest_name, self.object_path)
+        if self.message_name is not None:
+            self.interface = dbus.Interface(self.obj, dbus_interface=self.message_name)
     
     def get_data(self):
         """
@@ -34,11 +37,6 @@ class SpotifyClient(Client):
     object_path = "/org/mpris/MediaPlayer2"
     message_name = "org.freedesktop.DBus.Properties"
 
-    def __init__(self):
-        self.bus = dbus.SessionBus()
-        self.obj = self.bus.get_object(self.dest_name, self.object_path)
-        self.interface = dbus.Interface(self.obj, dbus_interface=self.message_name)
-
     def get_data(self):
         metadata = self.interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
 
@@ -47,4 +45,24 @@ class SpotifyClient(Client):
         data['album'] = metadata['xesam:album']
         data['title'] = metadata['xesam:title']
         data['year'] = '?'
+        return data
+
+class BansheeClient(Client):
+    """
+    A client that interfaces with a running Banshee instance.
+    """
+
+    dest_name = "org.bansheeproject.Banshee"
+    object_path = "/org/bansheeproject/Banshee/PlayerEngine"
+    message_name = None
+
+    def get_data(self):
+        metadata = self.obj.GetCurrentTrack()
+        
+        data = dict()
+        data['artist'] = str(metadata['artist'])
+        data['album'] = str(metadata['album'])
+        data['title'] = str(metadata['name'])
+        data['year'] = str(metadata['year'])
+
         return data
