@@ -1,4 +1,43 @@
+import datetime
 import dbus
+import time
+
+def format_time(millis, format_string="%-M:%S"):
+    t = datetime.timedelta(microseconds=millis).total_seconds()
+    return time.strftime(format_string, time.gmtime(t))
+
+def replace_missing(data):
+    keys = [
+            'trackid',
+            'length',
+            'artUrl',
+            
+            'album',
+            'albumArtist',
+            'artist',
+            'asText',
+            'audioBPM',
+            'autoRating',
+            'comment',
+            'composer',
+            'contentCreated',
+            'discNumber',
+            'firstUsed',
+            'genre',
+            'lastUsed',
+            'lyricist',
+            'title',
+            'trackNumber',
+            'url',
+            'useCount',
+            'userRating',
+            'year'
+            ]
+    for k in keys:
+        if k not in data.keys():
+            data[k] = '?'
+
+    return data
 
 class Client:
     """
@@ -39,13 +78,23 @@ class Spotify(Client):
 
     def get_data(self):
         metadata = self.interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
+        print(metadata)
 
         data = dict()
-        data['artist'] = metadata['xesam:albumArtist'][0]
-        data['album'] = metadata['xesam:album']
-        data['title'] = metadata['xesam:title']
-        data['year'] = '?'
-        return data
+        data['album'] = str(metadata['xesam:album'])
+        data['albumArtist'] = str(metadata['xesam:albumArtist'][0])
+        data['artist'] = str(metadata['xesam:artist'][0])
+        data['artUrl'] = str(metadata['mpris:artUrl'])
+        # TODO floating point precision
+        # TODO remove floating point number
+        data['autoRating'] = str(metadata['xesam:autoRating'] * 10)
+        data['discNumber'] = str(metadata['xesam:discNumber'])
+        data['length'] = format_time(int(metadata['mpris:length']))
+        data['title'] = str(metadata['xesam:title'])
+        data['trackNumber'] = str(metadata['xesam:trackNumber'])
+        data['trackid'] = str(metadata['mpris:trackid'])
+        data['url'] = str(metadata['xesam:url'])
+        return replace_missing(data)
 
 class Banshee(Client):
     """
