@@ -54,7 +54,6 @@ def main():
     if c is not None:
         data = c.get_data()
         if data is not None:
-            # print(data)
             print(format_data(data))
     else:
         print("No running client detected.")

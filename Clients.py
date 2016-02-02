@@ -83,7 +83,8 @@ class Banshee(Client):
 
         # Need to update a couple of bits of formatting to comply with our dict structure
         data['albumArtist'] = data.pop('album-artist')
-        data['autoRating'] = data.pop('score')
+        if data.get('score') is not None:
+            data['autoRating'] = data.pop('score')
         data['title'] = data.pop('name')
         data['trackNumber'] = data.pop('track-number')
         data['length'] = format_time(float(data['length']) * 1000 * 1000)
