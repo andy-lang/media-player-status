@@ -1,6 +1,7 @@
 import Clients
 from collections import OrderedDict
 import dbus
+import os, os.path
 
 def is_running(client):
     """
@@ -22,7 +23,8 @@ def main():
     c = None
 
     # Open the prefs file.
-    f = open('prefs.txt', 'r')
+    filepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'prefs.txt')
+    f = open(filepath, 'r')
     lines = f.readlines()
 
     subs = Clients.Client.__subclasses__()
