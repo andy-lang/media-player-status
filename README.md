@@ -33,8 +33,5 @@ While `dbus` is a standard, it's not one that everyone adheres to completely. Fo
 Here's a table of which media player supports what:
 
 | **Media Player** | Album | Album Artist | Artist | Auto Rating | Disc Number | Genre | Length | Position | Title | Track Number | User Rating | Year |
-| ---------------- | ----- | ------------ | ------ | ----------- | ----------- | ----- | ------ | -------- | ----- | ------------ | ----------- | ---- |
 | Banshee          | ✔     | ✔            | ✔      | ✔           |             | ✔     | ✔      | ✔        | ✔     | ✔            | ✔           | ✔    |
-| ---------------- | ----- | ------------ | ------ | ----------- | ----------- | ----- | ------ | -------- | ----- | ------------ | ----------- | ---- |
 | Spotify          | ✔     | ✔            | ✔      | ✔           | ✔           |       | ✔      |          | ✔     | ✔            |             |      | <!-- TODO check this -->
-| ---------------- | ----- | ------------ | ------ | ----------- | ----------- | ----- | ------ | -------- | ----- | ------------ | ----------- | ---- |
