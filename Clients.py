@@ -3,12 +3,8 @@ import dbus
 import time
 
 def format_time(millis, format_string="%-M:%S"):
-    t = datetime.timedelta(microseconds=millis).total_seconds()
+    t = datetime.timedelta(milliseconds=millis).total_seconds()
     return time.strftime(format_string, time.gmtime(t))
-
-def replace_key(data, old_key, new_key):
-    data[new_key] = data[old_key]
-    del data[old_key]
 
 class Client:
     """
@@ -67,7 +63,7 @@ class Spotify(Client):
         # TODO floating point precision
         # TODO remove magic number
         data['autoRating'] = str(data['autoRating'] * 10)
-        data['length'] = format_time(int(data['length']))
+        data['length'] = format_time(int(data['length'])/1000)
         return data
 
 class Banshee(Client):
@@ -85,12 +81,11 @@ class Banshee(Client):
             # Convert all to strings from dbus strings
             data[k] = str(data[k])
 
-        print(data)
-
-        try:
-            replace_key(data, 'name', 'title')
-            replace_key(data, 'track-number', 'trackNumber')
-        except KeyError:
-            pass
+        # Need to update a couple of bits of formatting to comply with our dict structure
+        data['albumArtist'] = data.pop('album-artist')
+        data['autoRating'] = data.pop('score')
+        data['title'] = data.pop('name')
+        data['trackNumber'] = data.pop('track-number')
+        data['length'] = format_time(float(data['length']) * 1000 * 1000)
 
         return data
