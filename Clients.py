@@ -63,7 +63,7 @@ class Spotify(Client):
             data[new_key[len(new_key)-1]] = metadata[k]
 
         # Update formatting for a couple of items
-        data['autoRating'] = str(data['autoRating'] * 10) # rating is a float between 0 and 1, so we multiply by 10 for better readability.
+        data['autoRating'] = str(int(data['autoRating']) * 10) # rating is a float between 0 and 1, so we multiply by 10 for better readability.
         data['length'] = format_time(int(data['length'])/1000) # length is returned in microseconds, so we convert to milliseconds
         return data
 
@@ -89,7 +89,7 @@ class Banshee(Client):
         # Need to update a couple of bits of formatting to comply with our dict structure
         data['albumArtist'] = data.pop('album-artist')
         if data.get('score') is not None:
-            data['autoRating'] = data.pop('score')/10
+            data['autoRating'] = int(data.pop('score'))/10
         data['title'] = data.pop('name')
         data['trackNumber'] = data.pop('track-number')
         data['length'] = format_time(float(data['length']) * 1000 * 1000)
