@@ -1,4 +1,5 @@
 import Clients
+from collections import OrderedDict
 import dbus
 
 def is_running(client):
@@ -9,7 +10,12 @@ def is_running(client):
     return (bus.name_has_owner(client.dest_name))
 
 def format_data(data):
-    output = '{0}. {1} - {2} ({3}, {4})'.format(data['trackNumber'], data['title'], data['artist'], data['album'], data['year'])
+    output = '{0}. {1} - {2} ({3}, {4})'.format(
+            data.setdefault('trackNumber', '?'),
+            data.setdefault('title', '?'),
+            data.setdefault('artist', '?'),
+            data.setdefault('album', '?'),
+            data.setdefault('year', '?'))
     return output
 
 def replace_missing(data):
@@ -34,18 +40,24 @@ def replace_missing(data):
 
     return data
 
-if __name__ == '__main__':
+def main():
+    supported_clients = OrderedDict()
+    supported_clients['spotify'] = Clients.Spotify()
+    supported_clients['banshee'] = Clients.Banshee()
     c = None
-    if is_running(Clients.Spotify):
-        c = Clients.Spotify()
-    elif is_running(Clients.Banshee):
-        c = Clients.Banshee()
-        
+
+    for k in supported_clients.keys():
+        if is_running(supported_clients[k]):
+            c = supported_clients[k]
+            break
+            
     if c is not None:
         data = c.get_data()
         if data is not None:
             # print(data)
-            data = replace_missing(data)
             print(format_data(data))
     else:
         print("No running client detected.")
+
+if __name__ == '__main__':
+    main()
