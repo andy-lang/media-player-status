@@ -19,6 +19,9 @@ class Client:
     message_name = None
 
     def __init__(self):
+        pass
+
+    def connect(self):
         self.bus = dbus.SessionBus()
         self.obj = self.bus.get_object(self.dest_name, self.object_path)
         if self.message_name is not None:

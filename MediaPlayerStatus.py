@@ -52,6 +52,7 @@ def main():
             break
             
     if c is not None:
+        c.connect()
         data = c.get_data()
         if data is not None:
             # print(data)
