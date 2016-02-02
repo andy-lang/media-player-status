@@ -28,6 +28,7 @@ def replace_missing(data):
             'discNumber',
             'genre',
             'length',
+            'position',
             'title',
             'trackNumber',
             'useCount',

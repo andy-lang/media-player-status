@@ -80,6 +80,8 @@ class Banshee(Client):
 
     def get_data(self):
         data = self.obj.GetCurrentTrack()
+        data['rating'] = self.obj.GetRating()
+        data['position'] = format_time(self.obj.GetPosition())
         for k in data.keys():
             # Convert all to strings from dbus strings
             data[k] = str(data[k])
