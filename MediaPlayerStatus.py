@@ -12,6 +12,28 @@ def format_data(data):
     output = '{0}. {1} - {2} ({3}, {4})'.format(data['trackNumber'], data['title'], data['artist'], data['album'], data['year'])
     return output
 
+def replace_missing(data):
+    keys = [
+            'album',
+            'albumArtist',
+            'artist',
+            'autoRating',
+            'composer',
+            'discNumber',
+            'genre',
+            'length',
+            'title',
+            'trackNumber',
+            'useCount',
+            'userRating',
+            'year'
+            ]
+    for k in keys:
+        if k not in data.keys():
+            data[k] = '?'
+
+    return data
+
 if __name__ == '__main__':
     c = None
     if is_running(Clients.Spotify):
@@ -23,6 +45,7 @@ if __name__ == '__main__':
         data = c.get_data()
         if data is not None:
             # print(data)
+            data = replace_missing(data)
             print(format_data(data))
     else:
         print("No running client detected.")

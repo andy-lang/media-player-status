@@ -6,38 +6,9 @@ def format_time(millis, format_string="%-M:%S"):
     t = datetime.timedelta(microseconds=millis).total_seconds()
     return time.strftime(format_string, time.gmtime(t))
 
-def replace_missing(data):
-    keys = [
-            'trackid',
-            'length',
-            'artUrl',
-            
-            'album',
-            'albumArtist',
-            'artist',
-            'asText',
-            'audioBPM',
-            'autoRating',
-            'comment',
-            'composer',
-            'contentCreated',
-            'discNumber',
-            'firstUsed',
-            'genre',
-            'lastUsed',
-            'lyricist',
-            'title',
-            'trackNumber',
-            'url',
-            'useCount',
-            'userRating',
-            'year'
-            ]
-    for k in keys:
-        if k not in data.keys():
-            data[k] = '?'
-
-    return data
+def replace_key(data, old_key, new_key):
+    data[new_key] = data[old_key]
+    del data[old_key]
 
 class Client:
     """
@@ -78,23 +49,26 @@ class Spotify(Client):
 
     def get_data(self):
         metadata = self.interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
-        print(metadata)
 
         data = dict()
-        data['album'] = str(metadata['xesam:album'])
-        data['albumArtist'] = str(metadata['xesam:albumArtist'][0])
-        data['artist'] = str(metadata['xesam:artist'][0])
-        data['artUrl'] = str(metadata['mpris:artUrl'])
+
+        for k in metadata.keys():
+            # Convert the data to a regular string from a dbus string
+            if type(metadata[k]) == dbus.Array:
+                metadata[k] = metadata[k][0]
+            metadata[k] = str(metadata[k])
+
+            # Remove the "mpris:"/"xesam:" from each key
+            new_key = k.split(':')
+            # As we're replacing data in the same structure, we need to check if we're going to attempt to replace a previously shortened key
+            data[new_key[len(new_key)-1]] = metadata[k]
+
+        # Update formatting for a couple of items
         # TODO floating point precision
-        # TODO remove floating point number
-        data['autoRating'] = str(metadata['xesam:autoRating'] * 10)
-        data['discNumber'] = str(metadata['xesam:discNumber'])
-        data['length'] = format_time(int(metadata['mpris:length']))
-        data['title'] = str(metadata['xesam:title'])
-        data['trackNumber'] = str(metadata['xesam:trackNumber'])
-        data['trackid'] = str(metadata['mpris:trackid'])
-        data['url'] = str(metadata['xesam:url'])
-        return replace_missing(data)
+        # TODO remove magic number
+        data['autoRating'] = str(data['autoRating'] * 10)
+        data['length'] = format_time(int(data['length']))
+        return data
 
 class Banshee(Client):
     """
@@ -106,13 +80,17 @@ class Banshee(Client):
     message_name = None
 
     def get_data(self):
-        metadata = self.obj.GetCurrentTrack()
+        data = self.obj.GetCurrentTrack()
+        for k in data.keys():
+            # Convert all to strings from dbus strings
+            data[k] = str(data[k])
 
-        data = dict()
-        data['artist'] = str(metadata['artist'])
-        data['album'] = str(metadata['album'])
-        data['title'] = str(metadata['name'])
-        data['year'] = str(metadata['year'])
+        print(data)
 
+        try:
+            replace_key(data, 'name', 'title')
+            replace_key(data, 'track-number', 'trackNumber')
+        except KeyError:
+            pass
 
         return data
