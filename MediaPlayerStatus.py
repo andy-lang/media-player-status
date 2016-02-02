@@ -1,4 +1,5 @@
-from Clients import *
+import Clients
+import dbus
 
 def is_running(client):
     """
@@ -7,9 +8,20 @@ def is_running(client):
     bus = dbus.SessionBus()
     return (bus.name_has_owner(client.dest_name))
 
-if __name__ == '__main__':
-    if is_running(SpotifyClient):
-        c = SpotifyClient()
+def format_data(data):
+    output = '{0} - {1} ({2}, {3})'.format(data['title'], data['artist'], data['album'], data['year'])
+    return output
 
-    data = c.get_data()
-    print(data['title'])
+if __name__ == '__main__':
+    c = None
+    if is_running(Clients.Spotify):
+        c = Clients.Spotify()
+    elif is_running(Clients.Banshee):
+        c = Clients.Banshee()
+    else:
+        print("No media player detected.")
+        
+    if c is not None:
+        data = c.get_data()
+        if data is not None:
+            print(format_data(c.get_data()))

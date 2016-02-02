@@ -24,7 +24,7 @@ class Client:
         """
         return dict()
 
-class SpotifyClient(Client):
+class Spotify(Client):
     """
     A client that interfaces with a running Spotify instance.
     """
@@ -47,7 +47,7 @@ class SpotifyClient(Client):
         data['year'] = '?'
         return data
 
-class BansheeClient(Client):
+class Banshee(Client):
     """
     A client that interfaces with a running Banshee instance.
     """
@@ -58,11 +58,12 @@ class BansheeClient(Client):
 
     def get_data(self):
         metadata = self.obj.GetCurrentTrack()
-        
+
         data = dict()
         data['artist'] = str(metadata['artist'])
         data['album'] = str(metadata['album'])
         data['title'] = str(metadata['name'])
         data['year'] = str(metadata['year'])
+
 
         return data
