@@ -18,28 +18,6 @@ def format_data(data):
             data.setdefault('year', '?'))
     return output
 
-def replace_missing(data):
-    keys = [
-            'album',
-            'albumArtist',
-            'artist',
-            'autoRating',
-            'composer',
-            'discNumber',
-            'genre',
-            'length',
-            'title',
-            'trackNumber',
-            'useCount',
-            'userRating',
-            'year'
-            ]
-    for k in keys:
-        if k not in data.keys():
-            data[k] = '?'
-
-    return data
-
 def main():
     supported_clients = OrderedDict()
     supported_clients['spotify'] = Clients.Spotify()
@@ -52,6 +30,7 @@ def main():
             break
             
     if c is not None:
+        c.connect()
         data = c.get_data()
         if data is not None:
             print(format_data(data))

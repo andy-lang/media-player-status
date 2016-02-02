@@ -19,6 +19,9 @@ class Client:
     message_name = None
 
     def __init__(self):
+        pass
+
+    def connect(self):
         self.bus = dbus.SessionBus()
         self.obj = self.bus.get_object(self.dest_name, self.object_path)
         if self.message_name is not None:
@@ -77,6 +80,8 @@ class Banshee(Client):
 
     def get_data(self):
         data = self.obj.GetCurrentTrack()
+        data['rating'] = self.obj.GetRating()
+        data['position'] = format_time(self.obj.GetPosition())
         for k in data.keys():
             # Convert all to strings from dbus strings
             data[k] = str(data[k])
