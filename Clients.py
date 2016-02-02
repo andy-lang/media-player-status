@@ -14,6 +14,10 @@ class Client:
         * Emit this readable data in a common format.
     """
 
+    bus = None
+    obj = None
+    interface = None
+
     dest_name = None
     object_path = None
     message_name = None
@@ -29,7 +33,7 @@ class Client:
     
     def get_data(self):
         """
-        Returns data.
+        Returns metadata on the current song in a common format.
         """
         return dict()
 
@@ -37,10 +41,6 @@ class Spotify(Client):
     """
     A client that interfaces with a running Spotify instance.
     """
-
-    bus = None
-    obj = None
-    interface = None
 
     dest_name = "org.mpris.MediaPlayer2.spotify"
     object_path = "/org/mpris/MediaPlayer2"
@@ -63,10 +63,8 @@ class Spotify(Client):
             data[new_key[len(new_key)-1]] = metadata[k]
 
         # Update formatting for a couple of items
-        # TODO floating point precision
-        # TODO remove magic number
-        data['autoRating'] = str(data['autoRating'] * 10)
-        data['length'] = format_time(int(data['length'])/1000)
+        data['autoRating'] = str(data['autoRating'] * 10) # rating is a float between 0 and 1, so we multiply by 10 for better readability.
+        data['length'] = format_time(int(data['length'])/1000) # length is returned in microseconds, so we convert to milliseconds
         return data
 
 class Banshee(Client):
@@ -80,16 +78,18 @@ class Banshee(Client):
 
     def get_data(self):
         data = self.obj.GetCurrentTrack()
-        data['rating'] = self.obj.GetRating()
-        data['position'] = format_time(self.obj.GetPosition())
         for k in data.keys():
             # Convert all to strings from dbus strings
             data[k] = str(data[k])
 
+        # Rating and song positions are separate attributes, so we make separate calls to them
+        data['rating'] = self.obj.GetRating()
+        data['position'] = format_time(self.obj.GetPosition())
+
         # Need to update a couple of bits of formatting to comply with our dict structure
         data['albumArtist'] = data.pop('album-artist')
         if data.get('score') is not None:
-            data['autoRating'] = data.pop('score')
+            data['autoRating'] = data.pop('score')/10
         data['title'] = data.pop('name')
         data['trackNumber'] = data.pop('track-number')
         data['length'] = format_time(float(data['length']) * 1000 * 1000)

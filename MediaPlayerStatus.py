@@ -19,16 +19,28 @@ def format_data(data):
     return output
 
 def main():
-    supported_clients = OrderedDict()
-    supported_clients['spotify'] = Clients.Spotify()
-    supported_clients['banshee'] = Clients.Banshee()
     c = None
 
-    for k in supported_clients.keys():
-        if is_running(supported_clients[k]):
-            c = supported_clients[k]
-            break
-            
+    # Open the prefs file.
+    f = open('prefs.txt', 'r')
+    lines = f.readlines()
+
+    subs = Clients.Client.__subclasses__()
+
+    for l in lines:
+        l = l.rstrip()
+        # If there's a subclass of Clients.Client with a name equal to the current line in the text file, then this is the one to take note of.
+        i = (next((i for i, s in enumerate(subs) if s.__name__ == l), -1))
+        if i >= 0:
+            # check that it's running. If it is, we have a match.
+            if is_running(subs[i]):
+                c = subs[i]()
+                break
+        else:
+            # If the line isn't recognised as a subclass, the user will want to know. Print an error and exit.
+            print("Media player " + l + " not recognised.")
+            exit(1)
+
     if c is not None:
         c.connect()
         data = c.get_data()
