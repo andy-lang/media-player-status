@@ -63,7 +63,7 @@ class Spotify(Client):
             data[new_key[len(new_key)-1]] = metadata[k]
 
         # Update formatting for a couple of items
-        data['autoRating'] = str(int(data['autoRating']) * 10) # rating is a float between 0 and 1, so we multiply by 10 for better readability.
+        data['autoRating'] = str(float(data['autoRating']) * 10) # rating is a float between 0 and 1, so we multiply by 10 for better readability.
         data['length'] = format_time(int(data['length'])/1000) # length is returned in microseconds, so we convert to milliseconds
         return data
 
