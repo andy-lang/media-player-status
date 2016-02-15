@@ -38,5 +38,6 @@ Here's a table of which media player supports what:
 
 | **Media Player** | Title | Artist | Album Artist | Album | Track Number | Disc Number | Genre | Length | Year | Position | User Rating | Auto Rating |
 | ---------------- | ----- | ------ | ------------ | ----- | ------------ | ----------- | ----- | ------ | ---- | -------- | ----------- | ----------- |
-| Banshee          | ✔     | ✔      | ✔            | ✔     | ✔            |             | ✔     | ✔      | ✔    |✔         | ✔           | ✔           |
+| Banshee          | ✔     | ✔      | ✔            | ✔     | ✔            |             | ✔     | ✔      | ✔    | ✔        | ✔           | ✔           |
+| Clementine       | ✔     | ✔      |              | ✔     | ✔            |             | ✔     | ✔      | ✔    | ✔        | ✔           |             |
 | Spotify          | ✔     | ✔      | ✔            | ✔     | ✔            | ✔           |       | ✔      |      |          |             | ✔           |
