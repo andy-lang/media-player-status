@@ -68,7 +68,7 @@ class Clementine(Client):
         metadata = self.interface.GetMetadata()
         metadata['position'] = format_time(int(self.interface.PositionGet()))
         metadata['trackNumber'] = metadata.pop('tracknumber')
-        metadata['time'] = format_time(millis=int(metadata['mtime']))
+        metadata['length'] = format_time(millis=int(metadata['mtime']))
         return metadata
 
     
