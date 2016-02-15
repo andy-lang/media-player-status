@@ -28,7 +28,6 @@ def main():
     lines = f.readlines()
 
     subs = Clients.Client.__subclasses__()
-    print(subs)
 
     for l in lines:
         l = l.rstrip()
