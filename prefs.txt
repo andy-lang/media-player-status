@@ -1,2 +1,3 @@
+Clementine
 Spotify
 Banshee

@@ -6,6 +6,24 @@ def format_time(millis, format_string="%-M:%S"):
     t = datetime.timedelta(milliseconds=millis).total_seconds()
     return time.strftime(format_string, time.gmtime(t))
 
+def remove_xesam_mpris_delimiters(metadata):
+    data = dict()
+    for k in metadata.keys():
+        if type(metadata[k]) == dbus.Array:
+            metadata[k] = metadata[k][0]
+        metadata[k] = str(metadata[k])
+
+        if k.startswith('xesam:') or k.startswith('mpris:'):
+            # Remove the "mpris:"/"xesam:" from each key
+            new_key = k.split(':')[1]
+        else:
+            new_key = k
+
+        # As we're replacing data in the same structure, we need to check if we're going to attempt to replace a previously shortened key
+        data[new_key] = metadata[k]
+    return data
+
+
 class Client:
     """
     A parent Client module. Clients perform the following tasks for a particular type of media player:
@@ -37,6 +55,25 @@ class Client:
         """
         return dict()
 
+class Clementine(Client):
+    """
+    A client that interfaces with a running Clementine instance.
+    """
+
+    dest_name = "org.mpris.clementine"
+    object_path = "/Player"
+    message_name = "org.freedesktop.MediaPlayer"
+
+    def get_data(self):
+        metadata = self.interface.GetMetadata()
+        metadata['position'] = format_time(int(self.interface.PositionGet()))
+        metadata['trackNumber'] = metadata.pop('tracknumber')
+        metadata['length'] = format_time(millis=int(metadata['mtime']))
+        return metadata
+
+    
+
+
 class Spotify(Client):
     """
     A client that interfaces with a running Spotify instance.
@@ -49,18 +86,7 @@ class Spotify(Client):
     def get_data(self):
         metadata = self.interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
 
-        data = dict()
-
-        for k in metadata.keys():
-            # Convert the data to a regular string from a dbus string
-            if type(metadata[k]) == dbus.Array:
-                metadata[k] = metadata[k][0]
-            metadata[k] = str(metadata[k])
-
-            # Remove the "mpris:"/"xesam:" from each key
-            new_key = k.split(':')
-            # As we're replacing data in the same structure, we need to check if we're going to attempt to replace a previously shortened key
-            data[new_key[len(new_key)-1]] = metadata[k]
+        data = remove_xesam_mpris_delimiters(metadata)
 
         # Update formatting for a couple of items
         data['autoRating'] = str(float(data['autoRating']) * 10) # rating is a float between 0 and 1, so we multiply by 10 for better readability.
