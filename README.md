@@ -1,6 +1,6 @@
 ## media-player-status
 
-A Python script to get information about what's currently playing on your favourite Linux media player.
+A Python 3 script to get information about what's currently playing on your favourite Linux media player.
 
 ### Why does this exist?
 
@@ -8,7 +8,7 @@ Like a lot of people, I like listening to music when I code. I run Tmux in a ful
 
 ### Features
 
-* Compatible with either Python 2 or 3
+* Python 3
 * Works out of the box - no external dependencies required
 * Gets data for several media players in Linux
   * Banshee and Spotify are currently supported, more coming soon
