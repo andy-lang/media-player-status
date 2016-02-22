@@ -13,7 +13,7 @@ def is_running(client):
     bus = dbus.SessionBus()
     return (bus.name_has_owner(client.dest_name))
 
-def format_data(data, template_string="$track. $title - $artist ($album, $year)"):
+def format_data(data, template_string="$track. $title - $artist"):
     template = Template(template_string)
     output = template.substitute(
             title=data.setdefault('title', '?'),
