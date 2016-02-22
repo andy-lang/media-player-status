@@ -89,7 +89,7 @@ class Spotify(Client):
         data = remove_xesam_mpris_delimiters(metadata)
 
         # Update formatting for a couple of items
-        data['autoRating'] = str(float(data['autoRating']) * 10) # rating is a float between 0 and 1, so we multiply by 10 for better readability.
+        data['autoRating'] = str(float(data['autoRating']) 5) # rating is a float between 0 and 1, so we multiply by 5 to standardise.
         data['length'] = format_time(int(data['length'])/1000) # length is returned in microseconds, so we convert to milliseconds
         return data
 
@@ -115,7 +115,7 @@ class Banshee(Client):
         # Need to update a couple of bits of formatting to comply with our dict structure
         data['albumArtist'] = data.pop('album-artist')
         if data.get('score') is not None:
-            data['autoRating'] = int(data.pop('score'))/10
+            data['autoRating'] = int(data.pop('score'))/20 # normalise rating to be in range of 1-5
         data['title'] = data.pop('name')
         data['trackNumber'] = data.pop('track-number')
         data['length'] = format_time(float(data['length']) * 1000 * 1000)
