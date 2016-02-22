@@ -13,7 +13,12 @@ def is_running(client):
     bus = dbus.SessionBus()
     return (bus.name_has_owner(client.dest_name))
 
-def format_data(data, template_string="$track. $title - $artist"):
+def format_data(data, template_string="$track. $title - $artist", truncation_limit=25):
+    # Truncate all data to the limit passed into this method
+    for k in data:
+        data[k] = (data[k][:truncation_limit]+'...' if len(data[k]) > truncation_limit else data[k])
+
+    # Create a template and replace all templated data with the actual stuff, or question marks if the data cannot be found.
     template = Template(template_string)
     output = template.substitute(
             title=data.setdefault('title', '?'),
