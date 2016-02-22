@@ -13,7 +13,7 @@ def is_running(client):
     bus = dbus.SessionBus()
     return (bus.name_has_owner(client.dest_name))
 
-def format_data(data, template_string="$track. $title - $artist", truncation_limit=25):
+def format_data(data, template_string, truncation_limit):
     # Truncate all data to the limit passed into this method
     for k in data:
         data[k] = (data[k][:truncation_limit]+'...' if len(data[k]) > truncation_limit else data[k])
@@ -64,9 +64,16 @@ def main():
         data = c.get_data()
         if data is not None:
             try:
-                print(format_data(data, prefs.format_string))
+                trunc_len = prefs.truncation_length
             except AttributeError:
-                print(format_data(data))
+                trunc_len = 25
+
+            try:
+                format_string = prefs.format_string
+            except AttributeError:
+                format_string = "$track. $title - $artist"
+
+            print(format_data(data, format_string, trunc_len))
         else:
             print("Could not retrieve data from media player " + l + ".")
     else:
