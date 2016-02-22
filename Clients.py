@@ -89,7 +89,7 @@ class Spotify(Client):
         data = remove_xesam_mpris_delimiters(metadata)
 
         # Update formatting for a couple of items
-        data['autoRating'] = str(float(data['autoRating']) 5) # rating is a float between 0 and 1, so we multiply by 5 to standardise.
+        data['autoRating'] = str(float(data['autoRating']) * 5) # rating is a float between 0 and 1, so we multiply by 5 to standardise.
         data['length'] = format_time(int(data['length'])/1000) # length is returned in microseconds, so we convert to milliseconds
         return data
 
