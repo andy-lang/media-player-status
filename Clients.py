@@ -23,6 +23,14 @@ def remove_xesam_mpris_delimiters(metadata):
         data[new_key] = metadata[k]
     return data
 
+def convert_to_strings(data):
+    """
+    Convert dbus data to strings.
+    """
+    for k in data.keys():
+        # Convert all to strings from dbus strings
+        data[k] = str(data[k])
+    return data
 
 class Client:
     """
@@ -65,7 +73,7 @@ class Clementine(Client):
     message_name = "org.freedesktop.MediaPlayer"
 
     def get_data(self):
-        metadata = self.interface.GetMetadata()
+        metadata = convert_to_strings(self.interface.GetMetadata())
         metadata['position'] = format_time(int(self.interface.PositionGet()))
         metadata['trackNumber'] = metadata.pop('tracknumber')
         metadata['length'] = format_time(millis=int(metadata['mtime']))
@@ -84,7 +92,7 @@ class Spotify(Client):
     message_name = "org.freedesktop.DBus.Properties"
 
     def get_data(self):
-        metadata = self.interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
+        metadata = convert_to_strings(self.interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata'))
 
         data = remove_xesam_mpris_delimiters(metadata)
 
@@ -103,10 +111,8 @@ class Banshee(Client):
     message_name = None
 
     def get_data(self):
-        data = self.obj.GetCurrentTrack()
-        for k in data.keys():
-            # Convert all to strings from dbus strings
-            data[k] = str(data[k])
+        # data = self.obj.GetCurrentTrack()
+        data = convert_to_strings(self.obj.GetCurrentTrack())
 
         # Rating and song positions are separate attributes, so we make separate calls to them
         data['rating'] = self.obj.GetRating()
