@@ -9,7 +9,6 @@ def format_time(millis, format_string="%-M:%S"):
 def remove_xesam_mpris_delimiters(metadata):
     data = dict()
     for k in metadata.keys():
-        print(k, ":", metadata[k], "(", type(metadata[k]), ")")
         if type(metadata[k]) is dbus.Array:
             metadata[k] = metadata[k][0]
         metadata[k] = str(metadata[k])
