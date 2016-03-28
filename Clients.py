@@ -9,7 +9,8 @@ def format_time(millis, format_string="%-M:%S"):
 def remove_xesam_mpris_delimiters(metadata):
     data = dict()
     for k in metadata.keys():
-        if type(metadata[k]) == dbus.Array:
+        print(k, ":", metadata[k], "(", type(metadata[k]), ")")
+        if type(metadata[k]) is dbus.Array:
             metadata[k] = metadata[k][0]
         metadata[k] = str(metadata[k])
 
@@ -92,9 +93,7 @@ class Spotify(Client):
     message_name = "org.freedesktop.DBus.Properties"
 
     def get_data(self):
-        metadata = convert_to_strings(self.interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata'))
-
-        data = remove_xesam_mpris_delimiters(metadata)
+        data = remove_xesam_mpris_delimiters(self.interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata'))
 
         # Update formatting for a couple of items
         data['autoRating'] = str(float(data['autoRating']) * 5) # rating is a float between 0 and 1, so we multiply by 5 to standardise.
