@@ -125,3 +125,21 @@ class Banshee(Client):
         data['length'] = format_time(float(data['length']) * 1000 * 1000)
 
         return data
+
+class Pithos(Client):
+    """
+    Client that interfaces with a running Pithos instance.
+    """
+
+    dest_name = "org.mpris.MediaPlayer2.pithos"
+    object_path = "/org/mpris/MediaPlayer2"
+    # message_name = "org.mpris.MediaPlayer2.Player"
+    message_name = None
+    
+    def get_data(self):
+        # data = self.obj.Metadata()
+        data = remove_xesam_mpris_delimiters(self.obj.Get('org.mpris.MediaPlayer2.Player', 'Metadata'))
+        data = convert_to_strings(data)
+        return data
+    
+    
