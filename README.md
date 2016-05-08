@@ -11,13 +11,16 @@ Like a lot of people, I like listening to music when I code. I run Tmux in a ful
 * Python 3
 * Works out of the box - no external dependencies required
 * Gets data for several media players in Linux
-  * Banshee and Spotify are currently supported, more coming soon
+	* [Clementine](https://www.clementine-player.org/)
+	* [Spotify](https://www.spotify.com/us/download/linux/)
+	* [Banshee](http://banshee.fm/)
+	* [Pithos](http://pithos.github.io/)
 * Super easy to interface with other programs, such as Tmux, Vim, or Emacs - just call the script!
+* Customisable format strings
 
 ### Upcoming Features
 
 * Support for more media players
-* More easily customisable format string
 * Your ideas here...
 
 ### FAQ/Troubleshooting
@@ -41,3 +44,4 @@ Here's a table of which media player supports what:
 | Banshee          | ✔     | ✔      | ✔            | ✔     | ✔            |             | ✔     | ✔      | ✔    | ✔        | ✔           | ✔           |
 | Clementine       | ✔     | ✔      |              | ✔     | ✔            |             | ✔     | ✔      | ✔    | ✔        | ✔           |             |
 | Spotify          | ✔     | ✔      | ✔            | ✔     | ✔            | ✔           |       | ✔      |      |          |             | ✔           |
+| Pithos           | ✔     | ✔      |              | ✔     |              |             |       |        |      |          |             |             |
