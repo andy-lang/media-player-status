@@ -13,10 +13,10 @@ def is_running(client):
     bus = dbus.SessionBus()
     return (bus.name_has_owner(client.dest_name))
 
-def format_data(data, template_string, truncation_limit):
+def format_data(data, template_string, truncation_limit=-1):
     # Truncate all data to the limit passed into this method
     for k in data:
-        data[k] = (data[k][:truncation_limit]+'...' if len(data[k]) > truncation_limit else data[k])
+        data[k] = (data[k][:truncation_limit]+'...' if truncation_limit >= 0 and len(data[k]) > truncation_limit else data[k])
 
     # Create a template and replace all templated data with the actual stuff, or question marks if the data cannot be found.
     template = Template(template_string)
