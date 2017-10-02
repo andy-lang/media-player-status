@@ -142,4 +142,16 @@ class Pithos(Client):
         data = convert_to_strings(data)
         return data
     
-    
+class GooglePlayMusicDesktopPlayer(Client):
+    """
+    Client that interfaces with Google Play Music Desktop Player.
+    """
+
+    dest_name = "org.mpris.MediaPlayer2.google-play-music-desktop-player"
+    object_path = "/org/mpris/MediaPlayer2"
+    message_name = "org.freedesktop.DBus.Properties"
+
+    def get_data(self):
+        data = remove_xesam_mpris_delimiters(self.interface.Get('org.mpris.MediaPlayer2.Player', 'Metadata'))
+        return data
+

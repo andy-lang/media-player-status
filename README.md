@@ -45,3 +45,4 @@ Here's a table of which media player supports what:
 | Clementine       | ✔     | ✔      |              | ✔     | ✔            |             | ✔     | ✔      | ✔    | ✔        | ✔           |             |
 | Spotify          | ✔     | ✔      | ✔            | ✔     | ✔            | ✔           |       | ✔      |      |          |             | ✔           |
 | Pithos           | ✔     | ✔      |              | ✔     |              |             |       |        |      |          |             |             |
+| GPMDP            | ✔     | ✔      |              | ✔     |              |             |       | ✔      |      |          |             |             |
